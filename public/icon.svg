@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="22" fill="#1a1a1a"/>
+  <!-- Received bubble -->
+  <rect x="10" y="28" width="44" height="18" rx="9" fill="#3a3a3c"/>
+  <!-- Sent bubble (iMessage blue) -->
+  <rect x="36" y="54" width="54" height="18" rx="9" fill="#007AFF"/>
+</svg>

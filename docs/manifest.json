@@ -1,0 +1,24 @@
+{
+  "name": "FakeChat Studio",
+  "short_name": "FakeChat",
+  "description": "Visual conversation builder for iMessage, WhatsApp, and Instagram DMs",
+  "start_url": "/fakechat-studio/",
+  "scope": "/fakechat-studio/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
