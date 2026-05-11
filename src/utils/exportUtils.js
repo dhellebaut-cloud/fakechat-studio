@@ -1,16 +1,13 @@
 import html2canvas from 'html2canvas'
+import { toPng } from 'html-to-image'
 
 export async function exportPNG(elementId = 'phone-screen') {
   const el = document.getElementById(elementId)
   if (!el) throw new Error('Phone screen element not found')
 
-  const canvas = await html2canvas(el, {
-    useCORS: true,
-    allowTaint: true,
-    scale: 3,
-    backgroundColor: null,
-    logging: false,
-    foreignObjectRendering: true,
+  const dataUrl = await toPng(el, {
+    pixelRatio: 3,
+    skipAutoScale: true,
   })
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
@@ -19,7 +16,7 @@ export async function exportPNG(elementId = 'phone-screen') {
 
   const link = document.createElement('a')
   link.download = filename
-  link.href = canvas.toDataURL('image/png')
+  link.href = dataUrl
   link.click()
   return filename
 }
