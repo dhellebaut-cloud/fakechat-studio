@@ -799,3 +799,44 @@ body {
   font-size: 13px; padding: 4px 0; border-bottom: 0.5px solid #E5E5EA;
 }
 .info-stat span:last-child { font-weight: 600; }
+
+/* ─── Workspace dropdown ─────────────────────────────────────── */
+.workspace-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100;
+  background: #1C1C1E;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 4px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.workspace-option {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 7px;
+  color: #E5E5EA;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.workspace-option:hover { background: rgba(255,255,255,0.08); }
+.workspace-option.active { background: rgba(0,122,255,0.25); color: #60B0FF; font-weight: 600; }
+
+/* ─── Comments workspace controls ───────────────────────────── */
+.platform-switcher-inline {
+  display: flex;
+  gap: 6px;
+}
+.tiktok-btn { background: rgba(254,44,85,0.12); color: #fe2c55; border-color: rgba(254,44,85,0.35); }
+.tiktok-btn.active { background: #fe2c55; color: #fff; border-color: #fe2c55; }
+.facebook-btn { background: rgba(24,119,242,0.12); color: #1877F2; border-color: rgba(24,119,242,0.35); }
+.facebook-btn.active { background: #1877F2; color: #fff; border-color: #1877F2; }
+
