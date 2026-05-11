@@ -71,7 +71,7 @@ export default function WhatsApp() {
       {/* Status bar */}
       <div style={{ background: headerBg, color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', height: 50, fontSize: 11, fontWeight: 600, flexShrink: 0 }}>
         <span>{statusBar.time}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <SignalIcon color="#fff" size={17} />
           <WifiIcon color="#fff" size={16} />
           <BatteryIcon color="#fff" size={25} />

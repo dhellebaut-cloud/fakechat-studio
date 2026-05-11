@@ -382,6 +382,7 @@ body {
 }
 .im-sb-time { font-variant-numeric: tabular-nums; }
 .im-sb-right { display: flex; align-items: center; gap: 6px; }
+.im-sb-icons { display: flex; align-items: center; gap: 6px; }
 .im-sb-signal { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
 .signal-bar { width: 3px; border-radius: 1px; display: inline-block; }
 .im-sb-wifi { display: flex; align-items: center; }
