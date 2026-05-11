@@ -40,22 +40,57 @@ const defaultMessages = [
   },
 ]
 
-export const useStore = create((set, get) => ({
-  platform: 'imessage',
-  darkMode: false,
+function newConvData() {
+  const contactId = genId()
+  return {
+    messages: [],
+    contacts: [{ id: contactId, name: 'Contact', avatar: null, color: '#4ECDC4' }],
+    statusBar: { time: '9:41', signal: 4, battery: 87 },
+    chatName: 'New Chat',
+    isGroupChat: false,
+  }
+}
+
+// Snapshot active flat state back into conversations array
+function snapshot(s) {
+  return s.conversations.map(c =>
+    c.id === s.activeConvId
+      ? { ...c, messages: s.messages, contacts: s.contacts, statusBar: s.statusBar, chatName: s.chatName, isGroupChat: s.isGroupChat }
+      : c
+  )
+}
+
+const initialConvId = 'conv1'
+const initialConvData = {
   messages: defaultMessages,
   contacts: [defaultContact],
   statusBar: { time: '9:41', signal: 4, battery: 87 },
   chatName: 'Sarah Johnson',
   isGroupChat: false,
+}
+
+export const useStore = create((set, get) => ({
+  // ── Conversations ──
+  conversations: [{ id: initialConvId, ...initialConvData }],
+  activeConvId: initialConvId,
+
+  // ── Global state ──
+  platform: 'imessage',
+  darkMode: false,
   showTypingIndicator: false,
 
+  // ── Active conversation flat state ──
+  ...initialConvData,
+
+  // ── Global actions ──
   setPlatform: (platform) => set({ platform }),
   setDarkMode: (darkMode) => set({ darkMode }),
+  setShowTypingIndicator: (show) => set({ showTypingIndicator: show }),
+
+  // ── Per-conversation actions ──
   setChatName: (chatName) => set({ chatName }),
   setIsGroupChat: (isGroupChat) => set({ isGroupChat }),
   setStatusBar: (updates) => set((s) => ({ statusBar: { ...s.statusBar, ...updates } })),
-  setShowTypingIndicator: (show) => set({ showTypingIndicator: show }),
 
   addMessage: (msg) => set((s) => ({
     messages: [...s.messages, { ...msg, id: genId(), reactions: msg.reactions || [] }]
@@ -75,9 +110,7 @@ export const useStore = create((set, get) => ({
     messages: s.messages.map((m) => {
       if (m.id !== msgId) return m
       const existing = m.reactions.findIndex((r) => r.emoji === emoji && r.sender === sender)
-      if (existing >= 0) {
-        return { ...m, reactions: m.reactions.filter((_, i) => i !== existing) }
-      }
+      if (existing >= 0) return { ...m, reactions: m.reactions.filter((_, i) => i !== existing) }
       return { ...m, reactions: [...m.reactions, { emoji, sender }] }
     })
   })),
@@ -109,5 +142,54 @@ export const useStore = create((set, get) => ({
     const msgs = get().messages
     if (msgs.length === 0) return new Date()
     return new Date(msgs[msgs.length - 1].timestamp)
+  },
+
+  // ── Conversation management ──
+  addConversation: () => {
+    const s = get()
+    const newId = genId()
+    const data = newConvData()
+    set({
+      conversations: [...snapshot(s), { id: newId, ...data }],
+      activeConvId: newId,
+      ...data,
+    })
+  },
+
+  switchConversation: (id) => {
+    const s = get()
+    if (id === s.activeConvId) return
+    const saved = snapshot(s)
+    const target = saved.find(c => c.id === id)
+    if (!target) return
+    set({
+      conversations: saved,
+      activeConvId: id,
+      messages: target.messages,
+      contacts: target.contacts,
+      statusBar: target.statusBar,
+      chatName: target.chatName,
+      isGroupChat: target.isGroupChat,
+    })
+  },
+
+  deleteConversation: (id) => {
+    const s = get()
+    if (s.conversations.length <= 1) return
+    const saved = snapshot(s).filter(c => c.id !== id)
+    if (id === s.activeConvId) {
+      const next = saved[0]
+      set({
+        conversations: saved,
+        activeConvId: next.id,
+        messages: next.messages,
+        contacts: next.contacts,
+        statusBar: next.statusBar,
+        chatName: next.chatName,
+        isGroupChat: next.isGroupChat,
+      })
+    } else {
+      set({ conversations: saved })
+    }
   },
 }))

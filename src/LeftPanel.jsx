@@ -328,7 +328,8 @@ export default function LeftPanel() {
     addMessage, deleteMessage, reorderMessages,
     addContact, updateContact, deleteContact, generateFakeContact,
     setChatName, setIsGroupChat, setStatusBar,
-    getLastTimestamp
+    getLastTimestamp,
+    conversations, activeConvId, addConversation, switchConversation, deleteConversation,
   } = useStore()
 
   const [tab, setTab] = useState('messages')
@@ -345,6 +346,29 @@ export default function LeftPanel() {
 
   return (
     <aside className="left-panel">
+      <div className="conv-tabs">
+        {conversations.map(conv => (
+          <div
+            key={conv.id}
+            className={`conv-tab ${conv.id === activeConvId ? 'active' : ''}`}
+            onClick={() => switchConversation(conv.id)}
+            title={conv.id === activeConvId ? chatName : conv.chatName}
+          >
+            <span className="conv-tab-name">
+              {conv.id === activeConvId ? chatName : conv.chatName}
+            </span>
+            {conversations.length > 1 && (
+              <button
+                className="conv-tab-close"
+                onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id) }}
+                title="Remove conversation"
+              >×</button>
+            )}
+          </div>
+        ))}
+        <button className="conv-tab-add" onClick={addConversation} title="New conversation">+</button>
+      </div>
+
       <div className="panel-tabs">
         <button className={`panel-tab ${tab === 'messages' ? 'active' : ''}`} onClick={() => setTab('messages')}>
           💬 Messages
