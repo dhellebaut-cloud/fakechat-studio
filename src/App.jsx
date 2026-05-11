@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import FloatingPanel from './FloatingPanel'
 import FloatingExport from './FloatingExport'
 import FloatingCommentEditor from './FloatingCommentEditor'
+import FloatingCommentsExport from './FloatingCommentsExport'
 import CenterPanel from './CenterPanel'
 import CommentsWorkspace from './CommentsWorkspace'
 import { useStore } from './store'
@@ -12,6 +13,7 @@ export default function App() {
   const [panelOpen, setPanelOpen] = useState(true)
   const [exportOpen, setExportOpen] = useState(true)
   const [commentEditorOpen, setCommentEditorOpen] = useState(true)
+  const [commentExportOpen, setCommentExportOpen] = useState(true)
   const { platform, setPlatform } = useStore()
   const dropdownRef = useRef()
 
@@ -92,13 +94,22 @@ export default function App() {
             </>
           )}
           {workspace === 'comments' && (
-            <button
-              className={`editor-toggle-btn ${commentEditorOpen ? 'active' : ''}`}
-              onClick={() => setCommentEditorOpen(v => !v)}
-              title="Toggle comment editor"
-            >
-              ✏️ Editor
-            </button>
+            <>
+              <button
+                className={`editor-toggle-btn ${commentEditorOpen ? 'active' : ''}`}
+                onClick={() => setCommentEditorOpen(v => !v)}
+                title="Toggle comment editor"
+              >
+                ✏️ Editor
+              </button>
+              <button
+                className={`editor-toggle-btn ${commentExportOpen ? 'active' : ''}`}
+                onClick={() => setCommentExportOpen(v => !v)}
+                title="Toggle export panel"
+              >
+                ⬇ Export
+              </button>
+            </>
           )}
         </div>
       </header>
@@ -112,8 +123,9 @@ export default function App() {
       <FloatingPanel visible={workspace === 'messages' && panelOpen} onClose={() => setPanelOpen(false)} />
       <FloatingExport visible={workspace === 'messages' && exportOpen} onClose={() => setExportOpen(false)} />
 
-      {/* Comments workspace floating panel */}
+      {/* Comments workspace floating panels */}
       <FloatingCommentEditor visible={workspace === 'comments' && commentEditorOpen} onClose={() => setCommentEditorOpen(false)} />
+      <FloatingCommentsExport visible={workspace === 'comments' && commentExportOpen} onClose={() => setCommentExportOpen(false)} />
     </div>
   )
 }
