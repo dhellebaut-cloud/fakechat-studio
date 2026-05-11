@@ -10,6 +10,7 @@ export async function exportPNG(elementId = 'phone-screen') {
     scale: 3,
     backgroundColor: null,
     logging: false,
+    foreignObjectRendering: true,
   })
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
