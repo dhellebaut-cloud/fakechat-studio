@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import { useStore } from '../store'
 import Avatar from '../Avatar'
 import TypingIndicator from '../TypingIndicator'
+import { SignalIcon, WifiIcon, BatteryIcon } from '../StatusBarIcons'
 
 function fmt(date) {
   return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -47,9 +48,10 @@ export default function Instagram() {
       {/* Status bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: 50, flexShrink: 0, fontSize: 13, fontWeight: 600 }}>
         <span>{statusBar.time}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12 }}>
-          <span>▲▲▲</span>
-          <span>{statusBar.battery}%</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <SignalIcon color="#fff" size={17} />
+          <WifiIcon color="#fff" size={16} />
+          <BatteryIcon color="#fff" size={25} />
         </div>
       </div>
 

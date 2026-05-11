@@ -2,33 +2,18 @@ import React, { useRef, useEffect } from 'react'
 import { useStore } from '../store'
 import Avatar from '../Avatar'
 import TypingIndicator from '../TypingIndicator'
+import { SignalIcon, WifiIcon, BatteryIcon } from '../StatusBarIcons'
 
 /* ── Status bar ── */
-function StatusBar({ time, signal, battery, dark }) {
+function StatusBar({ time, dark }) {
   const c = dark ? '#fff' : '#000'
   return (
     <div className="im-statusbar" style={{ color: c }}>
       <span className="im-sb-time">{time}</span>
       <div className="im-sb-icons">
-        {/* Signal bars */}
-        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-          {[2,4,6,8,10].map((h,i) => (
-            <rect key={i} x={i*3} y={12-h} width="2" height={h} rx="0.5"
-              fill={i < Math.round((signal/4)*5) ? c : `${c}40`} />
-          ))}
-        </svg>
-        {/* Wifi */}
-        <svg width="16" height="12" viewBox="0 0 16 12" fill={c}>
-          <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
-          <path d="M8 6.5A5.5 5.5 0 013.4 8.4L2 7a7.5 7.5 0 0112 0l-1.4 1.4A5.5 5.5 0 018 6.5z"/>
-          <path d="M8 2.5a10 10 0 00-7 2.9L-.4 4A12 12 0 018 .5a12 12 0 018.4 4L15 5.4A10 10 0 008 2.5z"/>
-        </svg>
-        {/* Battery */}
-        <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
-          <rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke={c} strokeOpacity="0.35"/>
-          <rect x="1.5" y="1.5" width={Math.round(battery * 0.2)} height="10" rx="2" fill={c}/>
-          <path d="M24 4.5v4a2 2 0 000-4z" fill={c} fillOpacity="0.4"/>
-        </svg>
+        <SignalIcon color={c} size={17} />
+        <WifiIcon color={c} size={16} />
+        <BatteryIcon color={c} size={25} />
       </div>
     </div>
   )

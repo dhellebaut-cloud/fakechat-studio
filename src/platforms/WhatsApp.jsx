@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { useStore } from '../store'
 import Avatar from '../Avatar'
 import TypingIndicator from '../TypingIndicator'
+import { SignalIcon, WifiIcon, BatteryIcon } from '../StatusBarIcons'
 
 function fmt(date) {
   return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -68,12 +69,12 @@ export default function WhatsApp() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: '"Roboto", "Segoe UI", Helvetica, Arial, sans-serif' }}>
 
       {/* Status bar */}
-      <div style={{ background: headerBg, color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', height: 28, fontSize: 11, fontWeight: 600, flexShrink: 0 }}>
+      <div style={{ background: headerBg, color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', height: 50, fontSize: 11, fontWeight: 600, flexShrink: 0 }}>
         <span>{statusBar.time}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span>▲▲▲</span>
-          <span>WiFi</span>
-          <span>{statusBar.battery}%</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <SignalIcon color="#fff" size={17} />
+          <WifiIcon color="#fff" size={16} />
+          <BatteryIcon color="#fff" size={25} />
         </div>
       </div>
 

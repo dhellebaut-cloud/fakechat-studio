@@ -2,7 +2,10 @@ import React, { useState, useRef } from 'react'
 import RightPanel from './RightPanel'
 
 export default function FloatingExport({ visible, onClose }) {
-  const [pos, setPos] = useState({ x: 420, y: 76 })
+  const [pos, setPos] = useState(() => ({
+    x: Math.min(window.innerWidth - 340, window.innerWidth / 2 + 215),
+    y: 76,
+  }))
   const panelRef = useRef()
 
   function handleDragStart(e) {
