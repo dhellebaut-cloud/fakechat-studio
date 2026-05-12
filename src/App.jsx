@@ -27,10 +27,12 @@ export default function App() {
       <header className="app-header">
         {/* Logo with dropdown */}
         <div className="app-logo" style={{ position: 'relative', cursor: 'pointer', userSelect: 'none' }} ref={dropdownRef}>
-          <div onClick={() => setDropdownOpen(v => !v)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span className="logo-icon">💬</span>
+          <div onClick={() => setDropdownOpen(v => !v)} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg,#7c3aed,#a78bfa)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 }}>💬</div>
             <span className="logo-text">FakeChat Studio</span>
-            <span style={{ fontSize: 10, opacity: 0.6, marginLeft: 2 }}>▾</span>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ opacity: 0.4, marginLeft: -2 }}>
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
           {dropdownOpen && (
             <>
@@ -41,13 +43,13 @@ export default function App() {
                   className={`workspace-option ${workspace === 'messages' ? 'active' : ''}`}
                   onClick={() => selectWorkspace('messages')}
                 >
-                  💬 Messages
+                  ✉️ Messages
                 </button>
                 <button
                   className={`workspace-option ${workspace === 'comments' ? 'active' : ''}`}
                   onClick={() => selectWorkspace('comments')}
                 >
-                  🗨 Comments
+                  🗨️ Comments
                 </button>
               </div>
             </>
