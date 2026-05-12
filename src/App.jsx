@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
-import FloatingExport from './FloatingExport'
-import FloatingCommentsExport from './FloatingCommentsExport'
 import CenterPanel from './CenterPanel'
 import CommentsWorkspace from './CommentsWorkspace'
 import LeftPanel from './LeftPanel'
+import RightPanel from './RightPanel'
 import CommentsEditorSidebar from './comments/CommentsEditorSidebar'
+import CommentsExportPanel from './comments/CommentsExportPanel'
 import { useStore } from './store'
 
 export default function App() {
@@ -105,7 +105,7 @@ export default function App() {
       </header>
 
       <div className="app-body">
-        {/* Fixed editor sidebar */}
+        {/* Left editor sidebar */}
         {sidebarOpen && (
           <aside className="editor-sidebar">
             {workspace === 'messages' && <LeftPanel />}
@@ -118,11 +118,25 @@ export default function App() {
           {workspace === 'messages' && <CenterPanel />}
           {workspace === 'comments' && <CommentsWorkspace />}
         </div>
-      </div>
 
-      {/* Export panels — still floating */}
-      <FloatingExport visible={workspace === 'messages' && exportOpen} onClose={() => setExportOpen(false)} />
-      <FloatingCommentsExport visible={workspace === 'comments' && commentExportOpen} onClose={() => setCommentExportOpen(false)} />
+        {/* Right export sidebar */}
+        {workspace === 'messages' && exportOpen && (
+          <aside className="export-sidebar">
+            <div className="export-sidebar-header">
+              <span className="export-sidebar-title">Export</span>
+            </div>
+            <RightPanel />
+          </aside>
+        )}
+        {workspace === 'comments' && commentExportOpen && (
+          <aside className="export-sidebar">
+            <div className="export-sidebar-header">
+              <span className="export-sidebar-title">Export</span>
+            </div>
+            <CommentsExportPanel />
+          </aside>
+        )}
+      </div>
     </div>
   )
 }
