@@ -65,13 +65,13 @@ function CommentRow({ comment, replies = [], level = 0 }) {
 
 export default function TikTokComments() {
   const { comments, tikTokPost: p, tikTokCommentType } = useCommentsStore()
-
-  if (tikTokCommentType === 'textBubble') return <TikTokTextBubbleView />
   const scrollRef = useRef()
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [comments])
+
+  if (tikTokCommentType === 'textBubble') return <TikTokTextBubbleView />
 
   const threads = comments
     .filter(c => !c.parentId)
