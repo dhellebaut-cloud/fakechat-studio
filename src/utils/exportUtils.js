@@ -44,3 +44,24 @@ export async function exportPNG(elementId = 'phone-screen') {
   link.click()
   return filename
 }
+
+/** Export the speech bubble (#bubble-preview) as a transparent-background PNG at 3×. */
+export async function exportBubblePNG() {
+  const el = document.getElementById('bubble-preview')
+  if (!el) throw new Error('Bubble preview not found — switch to Text Bubble mode first')
+
+  const dataUrl = await toPng(el, {
+    pixelRatio: 3,
+    skipAutoScale: true,
+    backgroundColor: null, // transparent
+  })
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+  const filename = `bubble-${timestamp}.png`
+
+  const link = document.createElement('a')
+  link.download = filename
+  link.href = dataUrl
+  link.click()
+  return filename
+}

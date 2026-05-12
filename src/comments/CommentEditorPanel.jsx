@@ -123,70 +123,6 @@ function PostConfigTab() {
   )
 }
 
-function TextBubbleTab() {
-  const { tikTokTextBubble: b, updateTikTokTextBubble } = useCommentsStore()
-  const fileRef = useRef()
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <div className="section-title">Bubble</div>
-
-      <div className="form-row">
-        <label>Reply To</label>
-        <input
-          type="text"
-          value={b.replyToUsername}
-          onChange={e => updateTikTokTextBubble({ replyToUsername: e.target.value })}
-          placeholder="username"
-        />
-      </div>
-
-      <div className="section-title" style={{ marginTop: 4 }}>Commenter</div>
-
-      <div className="form-row">
-        <label>Avatar</label>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <Avatar contact={{ name: b.username, color: b.avatarColor, avatar: b.avatar }} size={28} />
-          <input
-            type="color"
-            value={b.avatarColor}
-            onChange={e => updateTikTokTextBubble({ avatarColor: e.target.value })}
-            className="color-picker"
-            style={{ width: 28, height: 22 }}
-          />
-          <button type="button" className="btn-secondary" onClick={() => fileRef.current?.click()}>Upload</button>
-          {b.avatar && <button type="button" className="btn-secondary" onClick={() => updateTikTokTextBubble({ avatar: null })}>×</button>}
-        </div>
-        <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => {
-          const f = e.target.files[0]; if (!f) return
-          const r = new FileReader(); r.onload = ev => updateTikTokTextBubble({ avatar: ev.target.result }); r.readAsDataURL(f)
-        }} />
-      </div>
-
-      <div className="form-row">
-        <label>Username</label>
-        <input
-          type="text"
-          value={b.username}
-          onChange={e => updateTikTokTextBubble({ username: e.target.value })}
-          placeholder="commenter"
-        />
-      </div>
-
-      <div className="form-row">
-        <label>Comment Text</label>
-        <textarea
-          rows={3}
-          value={b.text}
-          onChange={e => updateTikTokTextBubble({ text: e.target.value })}
-          placeholder="Write a comment…"
-        />
-        <span style={{ fontSize: 11, color: '#666', textAlign: 'right' }}>{b.text.length} chars</span>
-      </div>
-    </div>
-  )
-}
-
 function AddCommentForm() {
   const { commentPlatform, comments, addComment } = useCommentsStore()
   const [username, setUsername] = useState('')
@@ -322,19 +258,16 @@ export default function CommentEditorPanel() {
   const { comments, conversations, activeConvId, addConversation, switchConversation, deleteConversation, tikTokPost, commentPlatform, tikTokCommentType, setTikTokCommentType } = useCommentsStore()
   const [tab, setTab] = useState('comments')
 
-  // When switching to textBubble, default to the bubble tab; back to sheet → comments tab
   useEffect(() => {
-    if (commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble') {
-      setTab('bubble')
-    } else if (tab === 'bubble') {
-      setTab('comments')
-    }
-  }, [tikTokCommentType, commentPlatform])
+    if (tab === 'bubble') setTab('comments')
+  }, [tikTokCommentType])
 
   const threads = comments.filter(c => !c.parentId).flatMap(c => [
     c,
     ...comments.filter(r => r.parentId === c.id),
   ])
+
+  const isBubbleMode = commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble'
 
   return (
     <aside className="left-panel">
@@ -371,33 +304,35 @@ export default function CommentEditorPanel() {
         </div>
       )}
 
-      <div className="panel-tabs">
-        <button className={`panel-tab ${tab === 'post' ? 'active' : ''}`} onClick={() => setTab('post')}>📝 Post</button>
-        {commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble' ? (
-          <button className={`panel-tab ${tab === 'bubble' ? 'active' : ''}`} onClick={() => setTab('bubble')}>🗨 Bubble</button>
-        ) : (
-          <button className={`panel-tab ${tab === 'comments' ? 'active' : ''}`} onClick={() => setTab('comments')}>💬 Comments</button>
-        )}
-      </div>
-
-      {tab === 'post' && (
-        <div className="panel-content"><PostConfigTab /></div>
-      )}
-
-      {tab === 'bubble' && (
-        <div className="panel-content"><TextBubbleTab /></div>
-      )}
-
-      {tab === 'comments' && (
-        <div className="panel-content">
-          <div className="msg-list-wrap">
-            {threads.length === 0 && <div className="empty-msg-list">No comments yet.</div>}
-            {threads.map(c => <CommentListItem key={c.id} comment={c} />)}
-          </div>
-          <div className="add-msg-section">
-            <AddCommentForm />
-          </div>
+      {/* In bubble mode: no extra tabs needed — editor is a floating popup */}
+      {isBubbleMode ? (
+        <div style={{ padding: '16px 14px', color: '#666', fontSize: 12, lineHeight: 1.6 }}>
+          Use the <strong style={{ color: '#aaa' }}>Bubble Editor</strong> popup to edit text, avatar, highlight and blur.<br /><br />
+          Use the <strong style={{ color: '#aaa' }}>Export</strong> panel to save the bubble as a transparent PNG.
         </div>
+      ) : (
+        <>
+          <div className="panel-tabs">
+            <button className={`panel-tab ${tab === 'post' ? 'active' : ''}`} onClick={() => setTab('post')}>📝 Post</button>
+            <button className={`panel-tab ${tab === 'comments' ? 'active' : ''}`} onClick={() => setTab('comments')}>💬 Comments</button>
+          </div>
+
+          {tab === 'post' && (
+            <div className="panel-content"><PostConfigTab /></div>
+          )}
+
+          {tab === 'comments' && (
+            <div className="panel-content">
+              <div className="msg-list-wrap">
+                {threads.length === 0 && <div className="empty-msg-list">No comments yet.</div>}
+                {threads.map(c => <CommentListItem key={c.id} comment={c} />)}
+              </div>
+              <div className="add-msg-section">
+                <AddCommentForm />
+              </div>
+            </div>
+          )}
+        </>
       )}
     </aside>
   )

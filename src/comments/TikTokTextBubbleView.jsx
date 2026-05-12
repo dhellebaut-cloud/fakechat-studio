@@ -2,10 +2,10 @@ import React from 'react'
 import { useCommentsStore } from '../commentsStore'
 import Avatar from '../Avatar'
 
-const SHEET_HEIGHT = 510
-
+// Clean TikTok video view – no comment sheet, no bubble.
+// The bubble is rendered separately below the phone frame.
 export default function TikTokTextBubbleView() {
-  const { tikTokTextBubble: b, tikTokPost: p } = useCommentsStore()
+  const { tikTokPost: p } = useCommentsStore()
 
   const bg = p.thumbnail
     ? { backgroundImage: `url(${p.thumbnail})`, backgroundSize: 'cover', backgroundPosition: 'center' }
@@ -25,7 +25,7 @@ export default function TikTokTextBubbleView() {
       </div>
 
       {/* Right-side action buttons */}
-      <div style={{ position: 'absolute', right: 10, bottom: SHEET_HEIGHT + 16, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, zIndex: 10 }}>
+      <div style={{ position: 'absolute', right: 10, bottom: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, zIndex: 10 }}>
         <div style={{ position: 'relative' }}>
           <Avatar contact={{ name: p.creatorDisplayName, color: p.creatorAvatarColor, avatar: p.creatorAvatar }} size={44} />
           <div style={{ position: 'absolute', bottom: -8, left: '50%', transform: 'translateX(-50%)', width: 20, height: 20, borderRadius: '50%', background: '#fe2c55', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff', fontWeight: 700, border: '2px solid #000' }}>+</div>
@@ -44,75 +44,13 @@ export default function TikTokTextBubbleView() {
       </div>
 
       {/* Creator info — bottom left */}
-      <div style={{ position: 'absolute', left: 12, bottom: SHEET_HEIGHT + 16, right: 60, zIndex: 10 }}>
+      <div style={{ position: 'absolute', left: 12, bottom: 80, right: 60, zIndex: 10 }}>
         <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#fff' }}>{p.creatorUsername}</p>
         <p style={{ margin: '4px 0', fontSize: 13, color: '#fff', lineHeight: 1.3 }}>{p.caption}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <span style={{ fontSize: 13 }}>🎵</span>
           <span style={{ fontSize: 12, color: '#fff' }}>{p.songName}</span>
         </div>
-      </div>
-
-      {/* Text bubble positioned where comment sheet would be */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        height: SHEET_HEIGHT,
-        background: 'rgba(22, 24, 28, 0.97)',
-        borderRadius: '16px 16px 0 0',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        zIndex: 20,
-        padding: '0 20px',
-      }}>
-        <TextBubble b={b} />
-      </div>
-    </div>
-  )
-}
-
-function TextBubble({ b }) {
-  return (
-    <div style={{ position: 'relative', width: '100%' }}>
-      {/* Speech bubble */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: 18,
-        padding: '16px 18px',
-        position: 'relative',
-        boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
-      }}>
-        {/* Reply-to label */}
-        <div style={{ fontSize: 13, color: '#888', marginBottom: 10, fontWeight: 400 }}>
-          Reply to <span style={{ fontWeight: 600, color: '#555' }}>{b.replyToUsername}</span>'s comment
-        </div>
-
-        {/* Comment row: avatar + text */}
-        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-          <div style={{ flexShrink: 0 }}>
-            <Avatar contact={{ name: b.username, color: b.avatarColor, avatar: b.avatar }} size={40} />
-          </div>
-          <p style={{
-            margin: 0,
-            fontSize: 22,
-            fontWeight: 700,
-            color: '#111',
-            lineHeight: 1.35,
-            wordBreak: 'break-word',
-          }}>
-            {b.text}
-          </p>
-        </div>
-
-        {/* Bubble tail — bottom left */}
-        <div style={{
-          position: 'absolute',
-          bottom: -14,
-          left: 24,
-          width: 0,
-          height: 0,
-          borderLeft: '14px solid transparent',
-          borderRight: '0px solid transparent',
-          borderTop: '14px solid #ffffff',
-        }} />
       </div>
     </div>
   )

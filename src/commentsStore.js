@@ -31,7 +31,8 @@ function defaultTikTokTextBubble() {
   return {
     replyToUsername: 'username',
     username: 'commenter',
-    text: 'Write any comment and see what happens 😊',
+    isVerified: false,
+    segments: [{ text: 'Write any comment and see what happens 😊', style: null }],
     avatar: null,
     avatarColor: '#888888',
   }

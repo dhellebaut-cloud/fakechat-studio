@@ -4,6 +4,8 @@ import PhoneFrame from './PhoneFrame'
 import TikTokComments from './comments/TikTokComments'
 import FacebookComments from './comments/FacebookComments'
 import InstagramComments from './comments/InstagramComments'
+import TextBubbleDisplay from './comments/TextBubbleDisplay'
+import FloatingBubbleEditor from './comments/FloatingBubbleEditor'
 
 const PLATFORM_MAP = { tiktok: TikTokComments, facebook: FacebookComments, instagram: InstagramComments }
 const PHONE_W = 393
@@ -16,10 +18,18 @@ const PLATFORM_LABELS = {
 }
 
 export default function CommentsWorkspace() {
-  const { commentPlatform, setCommentPlatform, darkMode, setDarkMode } = useCommentsStore()
+  const { commentPlatform, setCommentPlatform, darkMode, setDarkMode, tikTokCommentType } = useCommentsStore()
   const PlatformView = PLATFORM_MAP[commentPlatform]
   const containerRef = useRef()
   const [scale, setScale] = useState(1)
+  const [bubbleEditorOpen, setBubbleEditorOpen] = useState(false)
+
+  const isBubbleMode = commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble'
+
+  // Auto-open the bubble editor when switching into bubble mode
+  useEffect(() => {
+    if (isBubbleMode) setBubbleEditorOpen(true)
+  }, [isBubbleMode])
 
   useEffect(() => {
     function updateScale() {
@@ -50,7 +60,7 @@ export default function CommentsWorkspace() {
           ))}
         </div>
 
-        {/* Dark/light toggle (TikTok is always dark) */}
+        {/* Dark/light toggle (TikTok always dark) */}
         {commentPlatform !== 'tiktok' && (
           <div
             className={`phone-mode-toggle ${darkMode ? 'is-dark' : 'is-light'}`}
@@ -62,6 +72,13 @@ export default function CommentsWorkspace() {
             <span className={`pmt-pill ${darkMode ? 'selected' : ''}`}>☽ Dark</span>
           </div>
         )}
+
+        {/* Re-open bubble editor button */}
+        {isBubbleMode && !bubbleEditorOpen && (
+          <button className="btn-secondary" style={{ fontSize: 12 }} onClick={() => setBubbleEditorOpen(true)}>
+            🗨 Open Bubble Editor
+          </button>
+        )}
       </div>
 
       <div className="center-phone-wrap">
@@ -69,6 +86,14 @@ export default function CommentsWorkspace() {
           <PlatformView />
         </PhoneFrame>
       </div>
+
+      {/* Bubble preview — shown below the phone in bubble mode */}
+      {isBubbleMode && <TextBubbleDisplay />}
+
+      {/* Floating bubble editor popup */}
+      {isBubbleMode && bubbleEditorOpen && (
+        <FloatingBubbleEditor onClose={() => setBubbleEditorOpen(false)} />
+      )}
     </main>
   )
 }
