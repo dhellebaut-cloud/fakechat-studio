@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useCommentsStore } from '../commentsStore'
 import Avatar from '../Avatar'
+import TikTokTextBubbleView from './TikTokTextBubbleView'
 
 const SHEET_HEIGHT = 510
 
@@ -63,7 +64,9 @@ function CommentRow({ comment, replies = [], level = 0 }) {
 }
 
 export default function TikTokComments() {
-  const { comments, tikTokPost: p } = useCommentsStore()
+  const { comments, tikTokPost: p, tikTokCommentType } = useCommentsStore()
+
+  if (tikTokCommentType === 'textBubble') return <TikTokTextBubbleView />
   const scrollRef = useRef()
 
   useEffect(() => {

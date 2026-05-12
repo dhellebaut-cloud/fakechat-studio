@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useCommentsStore } from '../commentsStore'
 import Avatar from '../Avatar'
 
@@ -119,6 +119,70 @@ function PostConfigTab() {
       <div className="form-row"><label>Caption</label><textarea rows={2} value={p.caption} onChange={e => updateInstagramPost({ caption: e.target.value })} /></div>
       <div className="form-row"><label>Like Count</label><input type="number" min={0} value={p.likeCount} onChange={e => updateInstagramPost({ likeCount: Number(e.target.value) })} /></div>
       <div className="form-row"><label>Timestamp</label><input type="text" value={p.timestamp} onChange={e => updateInstagramPost({ timestamp: e.target.value })} placeholder="2 HOURS AGO" /></div>
+    </div>
+  )
+}
+
+function TextBubbleTab() {
+  const { tikTokTextBubble: b, updateTikTokTextBubble } = useCommentsStore()
+  const fileRef = useRef()
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div className="section-title">Bubble</div>
+
+      <div className="form-row">
+        <label>Reply To</label>
+        <input
+          type="text"
+          value={b.replyToUsername}
+          onChange={e => updateTikTokTextBubble({ replyToUsername: e.target.value })}
+          placeholder="username"
+        />
+      </div>
+
+      <div className="section-title" style={{ marginTop: 4 }}>Commenter</div>
+
+      <div className="form-row">
+        <label>Avatar</label>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <Avatar contact={{ name: b.username, color: b.avatarColor, avatar: b.avatar }} size={28} />
+          <input
+            type="color"
+            value={b.avatarColor}
+            onChange={e => updateTikTokTextBubble({ avatarColor: e.target.value })}
+            className="color-picker"
+            style={{ width: 28, height: 22 }}
+          />
+          <button type="button" className="btn-secondary" onClick={() => fileRef.current?.click()}>Upload</button>
+          {b.avatar && <button type="button" className="btn-secondary" onClick={() => updateTikTokTextBubble({ avatar: null })}>×</button>}
+        </div>
+        <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => {
+          const f = e.target.files[0]; if (!f) return
+          const r = new FileReader(); r.onload = ev => updateTikTokTextBubble({ avatar: ev.target.result }); r.readAsDataURL(f)
+        }} />
+      </div>
+
+      <div className="form-row">
+        <label>Username</label>
+        <input
+          type="text"
+          value={b.username}
+          onChange={e => updateTikTokTextBubble({ username: e.target.value })}
+          placeholder="commenter"
+        />
+      </div>
+
+      <div className="form-row">
+        <label>Comment Text</label>
+        <textarea
+          rows={3}
+          value={b.text}
+          onChange={e => updateTikTokTextBubble({ text: e.target.value })}
+          placeholder="Write a comment…"
+        />
+        <span style={{ fontSize: 11, color: '#666', textAlign: 'right' }}>{b.text.length} chars</span>
+      </div>
     </div>
   )
 }
@@ -255,8 +319,17 @@ function CommentListItem({ comment, parentUsername }) {
 }
 
 export default function CommentEditorPanel() {
-  const { comments, conversations, activeConvId, addConversation, switchConversation, deleteConversation, tikTokPost } = useCommentsStore()
+  const { comments, conversations, activeConvId, addConversation, switchConversation, deleteConversation, tikTokPost, commentPlatform, tikTokCommentType, setTikTokCommentType } = useCommentsStore()
   const [tab, setTab] = useState('comments')
+
+  // When switching to textBubble, default to the bubble tab; back to sheet → comments tab
+  useEffect(() => {
+    if (commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble') {
+      setTab('bubble')
+    } else if (tab === 'bubble') {
+      setTab('comments')
+    }
+  }, [tikTokCommentType, commentPlatform])
 
   const threads = comments.filter(c => !c.parentId).flatMap(c => [
     c,
@@ -278,13 +351,41 @@ export default function CommentEditorPanel() {
         <button className="conv-tab-add" onClick={addConversation} title="New conversation">+</button>
       </div>
 
+      {/* TikTok view type toggle */}
+      {commentPlatform === 'tiktok' && (
+        <div style={{ display: 'flex', gap: 6, padding: '8px 12px 0' }}>
+          <button
+            className={`panel-tab ${tikTokCommentType === 'sheet' ? 'active' : ''}`}
+            style={{ flex: 1, fontSize: 12 }}
+            onClick={() => setTikTokCommentType('sheet')}
+          >
+            💬 Comment Sheet
+          </button>
+          <button
+            className={`panel-tab ${tikTokCommentType === 'textBubble' ? 'active' : ''}`}
+            style={{ flex: 1, fontSize: 12 }}
+            onClick={() => setTikTokCommentType('textBubble')}
+          >
+            🗨 Text Bubble
+          </button>
+        </div>
+      )}
+
       <div className="panel-tabs">
         <button className={`panel-tab ${tab === 'post' ? 'active' : ''}`} onClick={() => setTab('post')}>📝 Post</button>
-        <button className={`panel-tab ${tab === 'comments' ? 'active' : ''}`} onClick={() => setTab('comments')}>💬 Comments</button>
+        {commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble' ? (
+          <button className={`panel-tab ${tab === 'bubble' ? 'active' : ''}`} onClick={() => setTab('bubble')}>🗨 Bubble</button>
+        ) : (
+          <button className={`panel-tab ${tab === 'comments' ? 'active' : ''}`} onClick={() => setTab('comments')}>💬 Comments</button>
+        )}
       </div>
 
       {tab === 'post' && (
         <div className="panel-content"><PostConfigTab /></div>
+      )}
+
+      {tab === 'bubble' && (
+        <div className="panel-content"><TextBubbleTab /></div>
       )}
 
       {tab === 'comments' && (

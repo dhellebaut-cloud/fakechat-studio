@@ -27,6 +27,16 @@ function defaultTikTokPost() {
   }
 }
 
+function defaultTikTokTextBubble() {
+  return {
+    replyToUsername: 'username',
+    username: 'commenter',
+    text: 'Write any comment and see what happens 😊',
+    avatar: null,
+    avatarColor: '#888888',
+  }
+}
+
 function defaultFacebookPost() {
   return {
     authorName: 'John Doe',
@@ -97,6 +107,7 @@ function newConvData() {
   return {
     comments: [],
     tikTokPost: defaultTikTokPost(),
+    tikTokTextBubble: defaultTikTokTextBubble(),
     facebookPost: defaultFacebookPost(),
     instagramPost: defaultInstagramPost(),
   }
@@ -105,7 +116,7 @@ function newConvData() {
 function snapshot(s) {
   return s.conversations.map(c =>
     c.id === s.activeConvId
-      ? { ...c, comments: s.comments, tikTokPost: s.tikTokPost, facebookPost: s.facebookPost, instagramPost: s.instagramPost }
+      ? { ...c, comments: s.comments, tikTokPost: s.tikTokPost, tikTokTextBubble: s.tikTokTextBubble, facebookPost: s.facebookPost, instagramPost: s.instagramPost }
       : c
   )
 }
@@ -114,21 +125,25 @@ const initialConvId = 'cconv1'
 const initialConvData = {
   comments: defaultComments(),
   tikTokPost: defaultTikTokPost(),
+  tikTokTextBubble: defaultTikTokTextBubble(),
   facebookPost: defaultFacebookPost(),
   instagramPost: defaultInstagramPost(),
 }
 
 export const useCommentsStore = create((set, get) => ({
   commentPlatform: 'tiktok',
+  tikTokCommentType: 'sheet',
   darkMode: false,
   conversations: [{ id: initialConvId, ...initialConvData }],
   activeConvId: initialConvId,
   ...initialConvData,
 
   setCommentPlatform: (p) => set({ commentPlatform: p }),
+  setTikTokCommentType: (t) => set({ tikTokCommentType: t }),
   setDarkMode: (v) => set({ darkMode: v }),
 
   updateTikTokPost: (u) => set((s) => ({ tikTokPost: { ...s.tikTokPost, ...u } })),
+  updateTikTokTextBubble: (u) => set((s) => ({ tikTokTextBubble: { ...s.tikTokTextBubble, ...u } })),
   updateFacebookPost: (u) => set((s) => ({ facebookPost: { ...s.facebookPost, ...u } })),
   updateInstagramPost: (u) => set((s) => ({ instagramPost: { ...s.instagramPost, ...u } })),
   updateFacebookPostReactions: (u) => set((s) => ({ facebookPost: { ...s.facebookPost, reactions: { ...s.facebookPost.reactions, ...u } } })),
@@ -164,7 +179,7 @@ export const useCommentsStore = create((set, get) => ({
     const saved = snapshot(s)
     const target = saved.find(c => c.id === id)
     if (!target) return
-    set({ conversations: saved, activeConvId: id, comments: target.comments, tikTokPost: target.tikTokPost, facebookPost: target.facebookPost, instagramPost: target.instagramPost })
+    set({ conversations: saved, activeConvId: id, comments: target.comments, tikTokPost: target.tikTokPost, tikTokTextBubble: target.tikTokTextBubble || defaultTikTokTextBubble(), facebookPost: target.facebookPost, instagramPost: target.instagramPost })
   },
 
   deleteConversation: (id) => {
@@ -173,7 +188,7 @@ export const useCommentsStore = create((set, get) => ({
     const saved = snapshot(s).filter(c => c.id !== id)
     if (id === s.activeConvId) {
       const next = saved[0]
-      set({ conversations: saved, activeConvId: next.id, comments: next.comments, tikTokPost: next.tikTokPost, facebookPost: next.facebookPost, instagramPost: next.instagramPost })
+      set({ conversations: saved, activeConvId: next.id, comments: next.comments, tikTokPost: next.tikTokPost, tikTokTextBubble: next.tikTokTextBubble || defaultTikTokTextBubble(), facebookPost: next.facebookPost, instagramPost: next.instagramPost })
     } else {
       set({ conversations: saved })
     }
