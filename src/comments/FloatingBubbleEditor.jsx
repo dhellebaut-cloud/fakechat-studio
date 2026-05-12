@@ -51,7 +51,7 @@ export default function FloatingBubbleEditor({ onClose }) {
   const panelRef = useRef()
   const [pos, setPos] = useState(() => ({
     x: Math.max(8, window.innerWidth / 2 - 215 - 320),
-    y: 96,
+    y: Math.min(560, window.innerHeight - 320),
   }))
 
   // ── drag ──────────────────────────────────────────────────────────────────
