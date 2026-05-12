@@ -377,24 +377,57 @@ body {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  padding: 12px;
   background: var(--bg-panel);
   border-right: 1px solid var(--border);
   overflow-y: auto;
 }
 
-.sidebar-divider {
-  height: 1px;
-  background: var(--border);
+/* ─── Sidebar sections (purple-bordered cards) ─── */
+.sidebar-section {
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   flex-shrink: 0;
 }
 
-/* Make panel content flow naturally inside sidebar (sidebar handles scroll) */
-.editor-sidebar .left-panel {
+.sidebar-section-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(124, 58, 237, 0.18);
+  border-bottom: 1px solid rgba(124, 58, 237, 0.35);
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #a78bfa;
+}
+
+.sidebar-section-body {
+  background: var(--bg-elevated);
+}
+
+.sidebar-section-body--padded {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Override left-panel / panel-content when inside a sidebar section */
+.sidebar-section .left-panel {
   flex: none;
   overflow: visible;
   background: transparent;
 }
-.editor-sidebar .panel-content {
+.sidebar-section .panel-content {
   overflow: visible;
   flex: none;
 }

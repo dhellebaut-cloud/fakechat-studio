@@ -9,17 +9,26 @@ export default function CommentsEditorSidebar() {
 
   return (
     <aside className="editor-sidebar">
-      {/* Standard comment editor (post + comments tabs) */}
-      <CommentEditorPanel />
+      {/* Comments section */}
+      <div className="sidebar-section">
+        <div className="sidebar-section-header">
+          <span className="sidebar-section-title">💬 Comments</span>
+        </div>
+        <div className="sidebar-section-body">
+          <CommentEditorPanel />
+        </div>
+      </div>
 
       {/* Bubble editor — only on TikTok */}
       {isTikTok && (
-        <>
-          <div className="sidebar-divider" />
-          <div className="panel-content" style={{ flex: 'none' }}>
+        <div className="sidebar-section">
+          <div className="sidebar-section-header">
+            <span className="sidebar-section-title">🗨️ Bubble</span>
+          </div>
+          <div className="sidebar-section-body sidebar-section-body--padded">
             <BubbleEditorContent />
           </div>
-        </>
+        </div>
       )}
     </aside>
   )
