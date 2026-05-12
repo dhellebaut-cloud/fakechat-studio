@@ -8,7 +8,7 @@ export default function CommentsEditorSidebar() {
   const isTikTok = commentPlatform === 'tiktok'
 
   return (
-    <aside className="editor-sidebar">
+    <>
       {/* Comments section */}
       <div className="sidebar-section">
         <div className="sidebar-section-header">
@@ -30,6 +30,6 @@ export default function CommentsEditorSidebar() {
           </div>
         </div>
       )}
-    </aside>
+    </>
   )
 }
