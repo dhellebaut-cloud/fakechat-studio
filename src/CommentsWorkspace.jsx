@@ -18,18 +18,18 @@ const PLATFORM_LABELS = {
 }
 
 export default function CommentsWorkspace() {
-  const { commentPlatform, setCommentPlatform, darkMode, setDarkMode, tikTokCommentType } = useCommentsStore()
+  const { commentPlatform, setCommentPlatform, darkMode, setDarkMode } = useCommentsStore()
   const PlatformView = PLATFORM_MAP[commentPlatform]
   const containerRef = useRef()
   const [scale, setScale] = useState(1)
-  const [bubbleEditorOpen, setBubbleEditorOpen] = useState(false)
+  const [bubbleEditorOpen, setBubbleEditorOpen] = useState(commentPlatform === 'tiktok')
 
-  const isBubbleMode = commentPlatform === 'tiktok' && tikTokCommentType === 'textBubble'
+  const isTikTok = commentPlatform === 'tiktok'
 
-  // Auto-open the bubble editor when switching into bubble mode
+  // Auto-open the bubble editor when switching to TikTok
   useEffect(() => {
-    if (isBubbleMode) setBubbleEditorOpen(true)
-  }, [isBubbleMode])
+    if (isTikTok) setBubbleEditorOpen(true)
+  }, [isTikTok])
 
   useEffect(() => {
     function updateScale() {
@@ -74,7 +74,7 @@ export default function CommentsWorkspace() {
         )}
 
         {/* Re-open bubble editor button */}
-        {isBubbleMode && !bubbleEditorOpen && (
+        {isTikTok && !bubbleEditorOpen && (
           <button className="btn-secondary" style={{ fontSize: 12 }} onClick={() => setBubbleEditorOpen(true)}>
             🗨 Open Bubble Editor
           </button>
@@ -87,11 +87,11 @@ export default function CommentsWorkspace() {
         </PhoneFrame>
       </div>
 
-      {/* Bubble preview — shown below the phone in bubble mode */}
-      {isBubbleMode && <TextBubbleDisplay />}
+      {/* Bubble preview — always shown on TikTok */}
+      {isTikTok && <TextBubbleDisplay />}
 
       {/* Floating bubble editor popup */}
-      {isBubbleMode && bubbleEditorOpen && (
+      {isTikTok && bubbleEditorOpen && (
         <FloatingBubbleEditor onClose={() => setBubbleEditorOpen(false)} />
       )}
     </main>
