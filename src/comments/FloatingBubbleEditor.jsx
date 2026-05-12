@@ -135,7 +135,7 @@ export default function FloatingBubbleEditor({ onClose }) {
         {/* Reply To */}
         <div className="section-title">Bubble</div>
         <div className="form-row">
-          <label>Reply To</label>
+          <label>Reply To Username</label>
           <input
             type="text"
             value={b.replyToUsername}
@@ -143,6 +143,14 @@ export default function FloatingBubbleEditor({ onClose }) {
             placeholder="username"
           />
         </div>
+        <label className="checkbox-label" style={{ fontSize: 12, color: '#ccc', gap: 6 }}>
+          <input
+            type="checkbox"
+            checked={b.isVerified}
+            onChange={e => updateTikTokTextBubble({ isVerified: e.target.checked })}
+          />
+          Verified (shows badge next to username)
+        </label>
 
         {/* Commenter */}
         <div className="section-title" style={{ marginTop: 4 }}>Commenter</div>
@@ -175,15 +183,6 @@ export default function FloatingBubbleEditor({ onClose }) {
             placeholder="commenter"
           />
         </div>
-
-        <label className="checkbox-label" style={{ fontSize: 12, color: '#ccc', gap: 6 }}>
-          <input
-            type="checkbox"
-            checked={b.isVerified}
-            onChange={e => updateTikTokTextBubble({ isVerified: e.target.checked })}
-          />
-          Verified ✓
-        </label>
 
         {/* Comment text + formatting */}
         <div className="section-title" style={{ marginTop: 4 }}>Comment Text</div>

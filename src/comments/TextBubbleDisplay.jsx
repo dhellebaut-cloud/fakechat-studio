@@ -2,41 +2,79 @@ import React from 'react'
 import { useCommentsStore } from '../commentsStore'
 import Avatar from '../Avatar'
 
+const BUBBLE_WIDTH = 420
+
 function segmentStyle(style) {
   if (style === 'highlight') return { background: '#FFE600', borderRadius: 3, padding: '0 2px' }
   if (style === 'blur') return { filter: 'blur(6px)', userSelect: 'none' }
   return {}
 }
 
+function VerifiedBadge() {
+  return (
+    <svg
+      width="17" height="17"
+      viewBox="0 0 24 24"
+      style={{ verticalAlign: 'middle', marginLeft: 4, marginRight: 1, flexShrink: 0 }}
+    >
+      <circle cx="12" cy="12" r="12" fill="#20D5EC" />
+      <path
+        d="M7.5 12.4L10.4 15.5L16.5 8.5"
+        stroke="white" strokeWidth="2.4"
+        strokeLinecap="round" strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  )
+}
+
 export function BubbleContent({ b }) {
   return (
-    <div style={{
-      background: '#ffffff',
-      borderRadius: 18,
-      padding: '16px 18px 20px',
-      position: 'relative',
-      boxShadow: '0 4px 28px rgba(0,0,0,0.18)',
-      display: 'inline-block',
-      minWidth: 220,
-      maxWidth: '100%',
-    }}>
-      {/* Reply-to label */}
-      <div style={{ fontSize: 13, color: '#999', marginBottom: 12, fontWeight: 400 }}>
-        Reply to <span style={{ fontWeight: 600, color: '#555' }}>{b.replyToUsername}</span>'s comment
-      </div>
-
-      {/* Avatar + text */}
-      <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-        <div style={{ flexShrink: 0 }}>
-          <Avatar contact={{ name: b.username, color: b.avatarColor, avatar: b.avatar }} size={40} />
+    /**
+     * #bubble-preview wraps the white box + the tail.
+     * paddingBottom creates space so the tail sits INSIDE the bounding box,
+     * which means html-to-image will capture the full tail on export.
+     */
+    <div
+      id="bubble-preview"
+      style={{
+        position: 'relative',
+        width: BUBBLE_WIDTH,
+        paddingBottom: 16,   // room for the tail
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* White bubble */}
+      <div style={{
+        background: '#ffffff',
+        borderRadius: 18,
+        padding: '16px 18px 20px',
+        boxShadow: '0 4px 28px rgba(0,0,0,0.15)',
+        width: '100%',
+        boxSizing: 'border-box',
+      }}>
+        {/* Reply-to label */}
+        <div style={{
+          fontSize: 13,
+          color: '#999',
+          marginBottom: 12,
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 0,
+          lineHeight: 1.4,
+        }}>
+          <span>Reply to&nbsp;</span>
+          <span style={{ fontWeight: 600, color: '#555' }}>{b.replyToUsername}</span>
+          {b.isVerified && <VerifiedBadge />}
+          <span>'s comment</span>
         </div>
-        <div style={{ flex: 1 }}>
-          {b.isVerified && (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#20D5EC', fontWeight: 600, marginBottom: 4 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#20D5EC"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-              {b.username}
-            </span>
-          )}
+
+        {/* Avatar + comment text */}
+        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+          <div style={{ flexShrink: 0 }}>
+            <Avatar contact={{ name: b.username, color: b.avatarColor, avatar: b.avatar }} size={40} />
+          </div>
           <p style={{
             margin: 0,
             fontSize: 22,
@@ -44,6 +82,8 @@ export function BubbleContent({ b }) {
             color: '#111',
             lineHeight: 1.35,
             wordBreak: 'break-word',
+            flex: 1,
+            minWidth: 0,
           }}>
             {(b.segments || []).map((seg, i) => (
               <span key={i} style={segmentStyle(seg.style)}>{seg.text}</span>
@@ -52,17 +92,15 @@ export function BubbleContent({ b }) {
         </div>
       </div>
 
-      {/* Bubble tail — bottom left */}
+      {/* Tail — sits in the paddingBottom area, fully inside #bubble-preview bounds */}
       <div style={{
         position: 'absolute',
-        bottom: -13,
+        bottom: 2,
         left: 26,
         width: 0,
         height: 0,
-        borderLeft: '13px solid transparent',
-        borderRight: '0px solid transparent',
-        borderTop: '13px solid #ffffff',
-        filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.08))',
+        borderLeft: '14px solid transparent',
+        borderTop: '14px solid #ffffff',
       }} />
     </div>
   )
@@ -76,12 +114,9 @@ export default function TextBubbleDisplay() {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      padding: '28px 24px 16px',
+      padding: '28px 24px 24px',
     }}>
-      {/* Transparent wrapper — this is what gets exported */}
-      <div id="bubble-preview" style={{ display: 'inline-block' }}>
-        <BubbleContent b={b} />
-      </div>
+      <BubbleContent b={b} />
     </div>
   )
 }
