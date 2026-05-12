@@ -1,18 +1,17 @@
 import React, { useRef, useState } from 'react'
-import FloatingPanel from './FloatingPanel'
 import FloatingExport from './FloatingExport'
-import FloatingCommentEditor from './FloatingCommentEditor'
 import FloatingCommentsExport from './FloatingCommentsExport'
 import CenterPanel from './CenterPanel'
 import CommentsWorkspace from './CommentsWorkspace'
+import LeftPanel from './LeftPanel'
+import CommentsEditorSidebar from './comments/CommentsEditorSidebar'
 import { useStore } from './store'
 
 export default function App() {
   const [workspace, setWorkspace] = useState('messages') // 'messages' | 'comments'
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [panelOpen, setPanelOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [exportOpen, setExportOpen] = useState(true)
-  const [commentEditorOpen, setCommentEditorOpen] = useState(true)
   const [commentExportOpen, setCommentExportOpen] = useState(true)
   const { platform, setPlatform } = useStore()
   const dropdownRef = useRef()
@@ -77,56 +76,52 @@ export default function App() {
         {workspace === 'comments' && <div style={{ flex: 1 }} />}
 
         <div className="header-actions">
+          <button
+            className={`editor-toggle-btn ${sidebarOpen ? 'active' : ''}`}
+            onClick={() => setSidebarOpen(v => !v)}
+            title="Toggle editor sidebar"
+          >
+            ✏️ Editor
+          </button>
           {workspace === 'messages' && (
-            <>
-              <button
-                className={`editor-toggle-btn ${panelOpen ? 'active' : ''}`}
-                onClick={() => setPanelOpen(v => !v)}
-                title="Toggle editor panel"
-              >
-                ✏️ Editor
-              </button>
-              <button
-                className={`editor-toggle-btn ${exportOpen ? 'active' : ''}`}
-                onClick={() => setExportOpen(v => !v)}
-                title="Toggle export panel"
-              >
-                ⬇ Export
-              </button>
-            </>
+            <button
+              className={`editor-toggle-btn ${exportOpen ? 'active' : ''}`}
+              onClick={() => setExportOpen(v => !v)}
+              title="Toggle export panel"
+            >
+              ⬇ Export
+            </button>
           )}
           {workspace === 'comments' && (
-            <>
-              <button
-                className={`editor-toggle-btn ${commentEditorOpen ? 'active' : ''}`}
-                onClick={() => setCommentEditorOpen(v => !v)}
-                title="Toggle comment editor"
-              >
-                ✏️ Editor
-              </button>
-              <button
-                className={`editor-toggle-btn ${commentExportOpen ? 'active' : ''}`}
-                onClick={() => setCommentExportOpen(v => !v)}
-                title="Toggle export panel"
-              >
-                ⬇ Export
-              </button>
-            </>
+            <button
+              className={`editor-toggle-btn ${commentExportOpen ? 'active' : ''}`}
+              onClick={() => setCommentExportOpen(v => !v)}
+              title="Toggle export panel"
+            >
+              ⬇ Export
+            </button>
           )}
         </div>
       </header>
 
       <div className="app-body">
-        {workspace === 'messages' && <CenterPanel />}
-        {workspace === 'comments' && <CommentsWorkspace />}
+        {/* Fixed editor sidebar */}
+        {sidebarOpen && (
+          <aside className="editor-sidebar">
+            {workspace === 'messages' && <LeftPanel />}
+            {workspace === 'comments' && <CommentsEditorSidebar />}
+          </aside>
+        )}
+
+        {/* Main workspace */}
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {workspace === 'messages' && <CenterPanel />}
+          {workspace === 'comments' && <CommentsWorkspace />}
+        </div>
       </div>
 
-      {/* Messages workspace floating panels */}
-      <FloatingPanel visible={workspace === 'messages' && panelOpen} onClose={() => setPanelOpen(false)} />
+      {/* Export panels — still floating */}
       <FloatingExport visible={workspace === 'messages' && exportOpen} onClose={() => setExportOpen(false)} />
-
-      {/* Comments workspace floating panels */}
-      <FloatingCommentEditor visible={workspace === 'comments' && commentEditorOpen} onClose={() => setCommentEditorOpen(false)} />
       <FloatingCommentsExport visible={workspace === 'comments' && commentExportOpen} onClose={() => setCommentExportOpen(false)} />
     </div>
   )

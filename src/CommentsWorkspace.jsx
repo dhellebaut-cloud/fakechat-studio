@@ -5,7 +5,6 @@ import TikTokComments from './comments/TikTokComments'
 import FacebookComments from './comments/FacebookComments'
 import InstagramComments from './comments/InstagramComments'
 import TextBubbleDisplay from './comments/TextBubbleDisplay'
-import FloatingBubbleEditor from './comments/FloatingBubbleEditor'
 
 const PLATFORM_MAP = { tiktok: TikTokComments, facebook: FacebookComments, instagram: InstagramComments }
 const PHONE_W = 393
@@ -22,14 +21,8 @@ export default function CommentsWorkspace() {
   const PlatformView = PLATFORM_MAP[commentPlatform]
   const containerRef = useRef()
   const [scale, setScale] = useState(1)
-  const [bubbleEditorOpen, setBubbleEditorOpen] = useState(commentPlatform === 'tiktok')
 
   const isTikTok = commentPlatform === 'tiktok'
-
-  // Auto-open the bubble editor when switching to TikTok
-  useEffect(() => {
-    if (isTikTok) setBubbleEditorOpen(true)
-  }, [isTikTok])
 
   useEffect(() => {
     function updateScale() {
@@ -72,13 +65,6 @@ export default function CommentsWorkspace() {
             <span className={`pmt-pill ${darkMode ? 'selected' : ''}`}>☽ Dark</span>
           </div>
         )}
-
-        {/* Re-open bubble editor button */}
-        {isTikTok && !bubbleEditorOpen && (
-          <button className="btn-secondary" style={{ fontSize: 12 }} onClick={() => setBubbleEditorOpen(true)}>
-            🗨 Open Bubble Editor
-          </button>
-        )}
       </div>
 
       <div className="center-phone-wrap">
@@ -89,11 +75,6 @@ export default function CommentsWorkspace() {
 
       {/* Bubble preview — always shown on TikTok */}
       {isTikTok && <TextBubbleDisplay />}
-
-      {/* Floating bubble editor popup */}
-      {isTikTok && bubbleEditorOpen && (
-        <FloatingBubbleEditor onClose={() => setBubbleEditorOpen(false)} />
-      )}
     </main>
   )
 }
