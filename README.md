@@ -4,6 +4,25 @@ A visual conversation builder that renders pixel-accurate chat interfaces for **
 
 ---
 
+## Deployment
+
+The live version is hosted on GitHub Pages:
+
+**https://dhellebaut-cloud.github.io/task-app/index.html**
+
+After every change, always build and push to keep the live site up to date:
+
+```bash
+npm run build
+git add -A
+git commit -m "your message"
+git push origin main
+```
+
+GitHub Pages serves the `docs/` folder. The build output goes there automatically via `vite.config.js`.
+
+---
+
 ## Quick start
 
 ```bash
