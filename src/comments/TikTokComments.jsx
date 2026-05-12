@@ -122,7 +122,7 @@ export default function TikTokComments() {
       </div>
 
       {/* Comment sheet */}
-      <div style={{
+      <div data-tiktok-sheet style={{
         position: 'absolute', bottom: 0, left: 0, right: 0,
         height: SHEET_HEIGHT,
         background: 'rgba(22, 24, 28, 0.97)',
@@ -142,7 +142,7 @@ export default function TikTokComments() {
         </div>
 
         {/* Comment list */}
-        <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '0 12px' }}>
+        <div ref={scrollRef} data-tiktok-scroll style={{ flex: 1, overflowY: 'auto', padding: '0 12px' }}>
           {threads.length === 0 && (
             <div style={{ textAlign: 'center', color: '#666', fontSize: 13, paddingTop: 32 }}>No comments yet</div>
           )}
